@@ -64,7 +64,7 @@ public class UnitTest1
 
             (await sagaHarness.Created.Any(x => x.CorrelationId == sagaId)).Should().BeTrue();
 
-            var instance = sagaHarness.Created.ContainsInState(sagaId, sagaHarness.StateMachine, sagaHarness.StateMachine.Initialized);
+            var instance = sagaHarness.Created.ContainsInState(sagaId, sagaHarness.StateMachine, sagaHarness.StateMachine.Running);
             instance.Should().NotBeNull("Saga instance should be found");
 
             instance.CorrelationId.Should().Be(sagaId);

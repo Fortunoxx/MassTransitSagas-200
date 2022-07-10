@@ -17,13 +17,6 @@ public class OrderState :
     public Guid? RequestId { get; internal set; }
 }
 
-// public class ProcessOrderConsumer : IConsumer<ProcessOrder>
-// {
-//     public async Task Consume(ConsumeContext<ProcessOrder> context)
-//     {
-//         await context.RespondAsync(new OrderProcessed(context.Message.OrderId, context.Message.ProcessingId));
-//     }
-// }
 public record OrderProcessed(Guid OrderId, Guid ProcessingId);
 public record ProcessOrder(Guid OrderId, Guid ProcessingId);
 public record OrderCancelled(Guid OrderId, string Reason);

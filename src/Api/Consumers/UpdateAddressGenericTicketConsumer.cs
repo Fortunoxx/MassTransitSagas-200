@@ -16,11 +16,10 @@ public class UpdateAddressGenericTicketConsumer : IConsumer<IUpdateAddressInitia
     {
         logger.LogInformation($"==== IUpdateAddressInitialized event received {context.Message.CorrelationId}");
         await Task.Delay(2000);
-        // this.UpdateOrderState(context.Message.Order);
+
         await context.Publish<IGenericTicketCreated>(new
         {
             CorrelationId = context.Message.CorrelationId,
-            // Order = context.Message.Order
         });
     }
 }

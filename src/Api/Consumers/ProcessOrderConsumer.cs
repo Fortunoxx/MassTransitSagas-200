@@ -16,14 +16,10 @@ public class ProcessOrderConsumer : IConsumer<IProcessOrder>
         logger.LogInformation($"==== IProcessOrder command received {context.Message.CorrelationId} doing stuff for 10 seconds...");
         await Task.Delay(10000);
         logger.LogInformation($"==== IProcessOrder command received {context.Message.CorrelationId} done");
-        // this.UpdateOrderState(context.Message.Order);
+
         await context.Publish<IProcessOrderDone>(new
         {
             CorrelationId = context.Message.CorrelationId,
-            // Order = context.Message.Order
         });
     }
-
-    // private void UpdateOrderState(Order order) =>
-    //    order.Status = Status.Shipped;
 }

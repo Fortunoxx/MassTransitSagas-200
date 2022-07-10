@@ -1,5 +1,5 @@
 using System.Reflection;
-using Api.Consumers;
+using Api.Application.Consumers;
 using MassTransit;
 
 var builder = WebApplication.CreateBuilder(args);

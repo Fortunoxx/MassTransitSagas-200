@@ -1,7 +1,7 @@
-namespace Api.StateMachine.Activities;
+namespace Api.Infrastructure.StateMachine.Activities;
 
 using System.Threading.Tasks;
-using Api.Events.UpdateAddress;
+using Api.Application.Events.UpdateAddress;
 using MassTransit;
 
 public class UpdateAddressInitializeActivity : IStateMachineActivity<UpdateAddressState, IUpdateAddressInvoked>
@@ -27,7 +27,7 @@ public class UpdateAddressInitializeActivity : IStateMachineActivity<UpdateAddre
         await Task.Delay(10000);
         logger.LogInformation($"==== UpdateAddressInitializeActivity {context.Message.CorrelationId} done");
 
-        await _context.Publish<IUpdateAddressInitialized>(new { CorrelationId = context.Saga.CorrelationId }).ConfigureAwait(false);
+        await _context.Publish<IUpdateAddressInitialized>(new { context.Saga.CorrelationId }).ConfigureAwait(false);
 
         // call the next activity in the behavior
         await next.Execute(context).ConfigureAwait(false);

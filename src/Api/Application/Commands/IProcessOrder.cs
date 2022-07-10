@@ -1,6 +1,6 @@
-using MassTransit;
+namespace Api.Application.Commands;
 
-namespace Api.Commands;
+using MassTransit;
 
 public interface IProcessOrder : CorrelatedBy<Guid>
 {

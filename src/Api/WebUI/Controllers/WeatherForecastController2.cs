@@ -1,8 +1,8 @@
-namespace Api.Controllers;
+namespace Api.WebUI.Controllers;
 
-using Api.Events;
-using Api.Events.UpdateAddress;
-using Api.Models;
+using Api.Application.Events.QueryProcessState;
+using Api.Application.Events.UpdateAddress;
+using Api.WebUI.Models;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,7 +23,7 @@ public class WeatherForecastController2 : ControllerBase
         , IPublishEndpoint publishEndpoint
         , IRequestClient<IQueryProcessState> client)
     {
-        this._logger = logger;
+        _logger = logger;
         this.publishEndpoint = publishEndpoint;
         this.client = client;
     }
@@ -41,9 +41,9 @@ public class WeatherForecastController2 : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest();
 
-        this.publishEndpoint.Publish<IUpdateAddressInvoked>(new
+        publishEndpoint.Publish<IUpdateAddressInvoked>(new
         {
-            CorrelationId = orderModel.CorrelationId,
+            orderModel.CorrelationId,
         });
 
         return NoContent();

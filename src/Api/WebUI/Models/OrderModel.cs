@@ -1,4 +1,4 @@
-namespace Api.Models;
+namespace Api.WebUI.Models;
 
 public record OrderModel
 {

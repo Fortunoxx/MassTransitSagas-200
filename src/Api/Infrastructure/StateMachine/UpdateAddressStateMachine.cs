@@ -1,8 +1,8 @@
-namespace Api.StateMachine;
+namespace Api.Infrastructure.StateMachine;
 
-using Api.Events;
-using Api.Events.UpdateAddress;
-using Api.StateMachine.Activities;
+using Api.Application.Events.QueryProcessState;
+using Api.Application.Events.UpdateAddress;
+using Api.Infrastructure.StateMachine.Activities;
 using MassTransit;
 
 public class UpdateAddressState
@@ -10,9 +10,15 @@ public class UpdateAddressState
 {
     public Guid CorrelationId { get; set; } // uid
     // public int CurrentState { get; set; }
+    
     public string CurrentState { get; set; }
 
     public string StatusText { get; set; }
+
+    public DateTime? CreateDate { get; set; }
+
+    // If using Optimistic concurrency, this property is required
+    public byte[] RowVersion { get; set; }
 }
 
 public class UpdateAddressStateMachine :
@@ -30,7 +36,7 @@ public class UpdateAddressStateMachine :
     public UpdateAddressStateMachine(ILogger<UpdateAddressStateMachine> logger)
     {
         this.logger = logger;
-        this.InstanceState(x => x.CurrentState);
+        InstanceState(x => x.CurrentState);
         Event(() => QueryProcessStateEvent, x => x.ReadOnly = true);
 
         Initially(
@@ -41,7 +47,7 @@ public class UpdateAddressStateMachine :
                 .TransitionTo(Running)
         );
 
-        During(Running ,
+        During(Running,
             When(GenericTicketCreatedEvent)
                 .Then(_ => logger.LogInformation("=== GenericTicket created"))
                 .Then(context => context.Instance.StatusText = "Running")

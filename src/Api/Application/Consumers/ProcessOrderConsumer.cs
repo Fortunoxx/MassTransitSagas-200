@@ -1,8 +1,8 @@
-using Api.Commands;
-using Api.Events.Order;
-using MassTransit;
+namespace Api.Application.Consumers;
 
-namespace Api.Consumers;
+using Api.Application.Commands;
+using Api.Application.Events.Order;
+using MassTransit;
 
 public class ProcessOrderConsumer : IConsumer<IProcessOrder>
 {
@@ -19,7 +19,7 @@ public class ProcessOrderConsumer : IConsumer<IProcessOrder>
 
         await context.Publish<IProcessOrderDone>(new
         {
-            CorrelationId = context.Message.CorrelationId,
+            context.Message.CorrelationId,
         });
     }
 }

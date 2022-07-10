@@ -1,4 +1,4 @@
-namespace Api.Events.UpdateAddress;
+namespace Api.Application.Events.UpdateAddress;
 
 using MassTransit;
 

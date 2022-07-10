@@ -1,8 +1,8 @@
-namespace Api.StateMachine;
+namespace Api.Infrastructure.StateMachine;
 
-using Api.Commands;
-using Api.Events;
-using Api.Events.Order;
+using Api.Application.Commands;
+using Api.Application.Events.Order;
+using Api.Application.Events.QueryProcessState;
 using MassTransit;
 
 public class OrderState :
@@ -32,12 +32,12 @@ public class OrderStateMachine :
     public State Cancelled { get; set; }
     // public State Accepted { get; private set; }
     public Request<OrderState, ProcessOrder, OrderProcessed> ProcessOrder { get; set; }
-    
+
     public OrderStateMachine(ILogger<OrderStateMachine> logger) //, IConfiguration configuration)
     {
         this.logger = logger;
         // this.configuration = configuration;
-        this.InstanceState(x => x.CurrentState);
+        InstanceState(x => x.CurrentState);
 
         // Event(() => SubmitOrder, x => x.CorrelateById(context => context.Message.OrderId));
         Event(() => SubmitOrderEvent);
@@ -52,21 +52,21 @@ public class OrderStateMachine :
                 // )
                 .Then(_ => logger.LogInformation("=== Hello from OrderStateMachine"))
                 // .PublishAsync( c => c.)
-                .Then(c => this.SendCommand<IProcessOrder>("queue-1", c))
+                .Then(c => SendCommand<IProcessOrder>("queue-1", c))
                 // .Then(c => c.Send<IProcessOrder>(c.Saga.ResponseAddress, "test"))
                 .TransitionTo(Submitted)
-                // .Then(context =>
-                // {
-                //     context.Saga.CorrelationId = context.Message.CorrelationId;
-                //     context.Saga.ProcessingId = Guid.NewGuid();
+        // .Then(context =>
+        // {
+        //     context.Saga.CorrelationId = context.Message.CorrelationId;
+        //     context.Saga.ProcessingId = Guid.NewGuid();
 
-                //     context.Saga.OrderId = Guid.NewGuid();
+        //     context.Saga.OrderId = Guid.NewGuid();
 
-                //     context.Saga.RequestId = context.RequestId;
-                //     context.Saga.ResponseAddress = context.ResponseAddress;
-                // })
-                // .Request(ProcessOrder, context => new ProcessOrder(context.Saga.CorrelationId, context.Saga.ProcessingId!.Value))
-                // .TransitionTo(ProcessOrder.Pending)
+        //     context.Saga.RequestId = context.RequestId;
+        //     context.Saga.ResponseAddress = context.ResponseAddress;
+        // })
+        // .Request(ProcessOrder, context => new ProcessOrder(context.Saga.CorrelationId, context.Saga.ProcessingId!.Value))
+        // .TransitionTo(ProcessOrder.Pending)
         );
 
         // During(ProcessOrder.Pending,
@@ -92,7 +92,7 @@ public class OrderStateMachine :
         //             await endpoint.Send(new OrderCancelled(context.Saga.OrderId, "Time-out"), r => r.RequestId = context.Saga.RequestId);
         //         }));
 
-        During(Submitted, 
+        During(Submitted,
             When(SubmitOrderEvent)
                 .Then(_ => logger.LogWarning("=== INVALID: already processing...")),
             When(ProcessOrderDoneEvent)
@@ -130,7 +130,7 @@ public class OrderStateMachine :
 
         await sendEndpoint.Send<TCommand>(new
         {
-            CorrelationId = context.Data.CorrelationId,
+            context.Data.CorrelationId,
             // Order = context.Data.Order
         });
     }
@@ -140,8 +140,8 @@ public class OrderStateMachine :
         public static string SectionName => "Queues";
         public string Name { get; init; }
         public string Address { get; init; }
-    }    
-    
+    }
+
     // public class QueueSettings
     // {
     //     public static string SectionName => "Queues";

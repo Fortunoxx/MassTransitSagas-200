@@ -1,4 +1,4 @@
-namespace Api.Events.Order;
+namespace Api.Application.Events.Order;
 
 using MassTransit;
 

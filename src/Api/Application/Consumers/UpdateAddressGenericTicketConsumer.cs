@@ -1,7 +1,7 @@
-using Api.Events.UpdateAddress;
-using MassTransit;
+namespace Api.Application.Consumers;
 
-namespace Api.Consumers;
+using Api.Application.Events.UpdateAddress;
+using MassTransit;
 
 public class UpdateAddressGenericTicketConsumer : IConsumer<IUpdateAddressInitialized>
 {
@@ -19,7 +19,7 @@ public class UpdateAddressGenericTicketConsumer : IConsumer<IUpdateAddressInitia
 
         await context.Publish<IGenericTicketCreated>(new
         {
-            CorrelationId = context.Message.CorrelationId,
+            context.Message.CorrelationId,
         });
     }
 }

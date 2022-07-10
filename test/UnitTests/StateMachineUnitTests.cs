@@ -5,10 +5,10 @@ using Microsoft.Extensions.DependencyInjection;
 using MassTransit;
 using MassTransit.Testing;
 using System;
-using Api.StateMachine;
 using FluentAssertions;
-using Api.Events.Order;
-using Api.Events.UpdateAddress;
+using Api.Application.Events.UpdateAddress;
+using Api.Application.Events.Order;
+using Api.Infrastructure.StateMachine;
 
 public class UnitTest1
 {
